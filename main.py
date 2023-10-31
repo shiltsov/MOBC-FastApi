@@ -1,14 +1,15 @@
+import os
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
-from configparser import ConfigParser
+from dotenv import load_dotenv
 import psycopg2
 
-cfg = "postgres.ini"
-config = ConfigParser()
-config.read(cfg)
+load_dotenv()
 
-#print("cfg = ", config['postgres']['host'])
-
+pg_host = os.getenv('PG_HOST')
+pg_user = os.getenv('PG_USER')
+pg_password = os.getenv('PG_PASSWORD')
+pg_db = os.getenv('PG_DB')
 
 app = FastAPI()
 
@@ -34,10 +35,10 @@ def get_config():
 @app.get("/list", response_class=HTMLResponse)
 def list_dogs():
     conn = psycopg2.connect(
-        dbname=config['postgres']['db'],
-        user=config['postgres']['user'],
-        password=config['postgres']['password'],
-        host=config['postgres']['host'],
+        dbname=pg_db,
+        user=pg_user,
+        password=pg_password,
+        host=pg_host,
     )
 
     cursor = conn.cursor()
